@@ -1,1 +1,5 @@
+What is version control?
+  Version control is a software development "tool" used to effectively allow multipule people work on the same software project at the same time. It keeps track of  changes in code, helps resolve mergers, and allows for rollbacks if neccesary.
 
+Why is version control important?
+  Version control is important because it helps solve the problems created when a group of people want to work on the same project. It helps prevent data being lost from overwriting or poor communication. Even when used on a solo project it helps by creating a more easily traceable project linage/history.
