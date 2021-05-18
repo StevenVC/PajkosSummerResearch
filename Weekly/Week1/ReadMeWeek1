@@ -1,0 +1,21 @@
+Reading:
+•	Read this LIGO article (the three links at the bottom of the page) & record a few bullet points summarizing it in your own words
+•	Record any questions you have
+
+  https://www.ligo.caltech.edu/page/gravitational-waves
+•	Read this Atlassian article on software best practices
+•	In your own words answer, "What is version control?" & "Why is version control important?"
+  https://www.atlassian.com/git/tutorials/source-code-management
+
+Create:
+•	If you don't already have one, create a github account: https://github.com/
+•	Work through this tutorial: https://guides.github.com/activities/hello-world/
+•	Create a repository (AKA - repo) where you will store your research code
+ 
+Code:
+•	Create a jupyter notebook (.ipynb) for exploring data files
+•	As an exercise, explore the attached datafile 'penguins.csv' and make 3 different kinds of plots.  The plots can use any parts of the data that you prefer
+
+Upload:
+•	Upload your ipynb plotting notebook (not the dataset) to your newly created research repo on github
+•	Upload a separate text file that contains 1 sentence stating what you would like to get out of this research experience and 1 sentence stating your career goal
