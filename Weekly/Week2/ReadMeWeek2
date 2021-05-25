@@ -1,1 +1,34 @@
+Coding Best Practices:
+•	Read the article on commenting code at the link below
+•	Record your top three tips for code commenting
+•	In your coding activity, make sure to follow these guidelines moving forward, according to your 3 tips (or more if you want)
+https://realpython.com/python-comments-guide/ 
+
+Coding Activity:
+•	Download the 2 data files (AKA .dat files) from our supernova outputs (google drive below)
+•	Plot the "neutron star mass" vs time for both simulations (units are in grams and seconds) (info contained in the header)
+o	For the s12 file, subtract 0.184469701 from the time values
+o	For the s40 file, subtract 0.366373606 from the time values
+o	Convert the y axis into units of solar masses
+•	Plot the "correct PNS radius" vs time for both simulations (units are in centimeters and seconds)
+o	Convert the y axis into units of solar radii
+•	Using a function you create (that takes radius and time as inputs), create an array that contains the derivative of the "correct PNS radius" with respect to time.
+o	Plot the derivative of the "correct PNS radius" vs time
+•	Explore the .dat files.  Using any columns, create any plot type you would like
+•	Upload your notebook (not the .dat files) to github when complete
+https://drive.google.com/drive/folders/1E3bz2evryZq6dpu_60LH35ZUxAPhkQno
+
+Supernovae:
+•	Read paragraphs 3 and 4 of the thesis link below (from "core collapse supernovae occur..." to "...the star explodes"
+•	These are two very dense paragraphs of scientific literature, so don't worry about understanding every line.  In a text file dedicated to astrophysics terms (this will be your 'astrophysics dictionary' moving forward), write down the words/terms you do not know.  Feel free to google a few of the terms and we will review the remaining ones together. Upload your astro-dictionary when complete.
+ http://flash.uchicago.edu/~calder/core.html#:~:text=Core%20collapse%20supernovae%20occur%20when,to%20the%20force%20of%20gravity.&text=A%20shock%20generated%20by%20this,stall%20before%20reaching%20this%20surface.
+ 
+ 
+Gravitational Waves:
+•	Watch the video called "The Invisible Colors of the Universe" at the link below.
+•	Record any questions that may arise about gravitational waves
+https://www.ligo.caltech.edu/page/recommended-reading
+
+Miscellaneous:
+•	Attached is advice written from another undergrad researcher named Sheldon, who's been involved with our research group for a couple years now.
 
