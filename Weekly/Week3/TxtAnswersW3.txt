@@ -1,0 +1,26 @@
+Python Style Guide: https://www.python.org/dev/peps/pep-0008/
+-Stuff thats all not neccesarily necesary for code but is useful to keep consistent
+	-White space layout
+	-Quote type/usage
+	-Comment style
+	-Naming conventions
+
+
+
+Neutrino Emission from Supernovae: https://arxiv.org/abs/1702.08713
+Electron capture - Process to stabalize an atom. Inner shell electron combines with proton, forms a neutron and 
+	electron neutrino
+
+Neutrinos - 0 net charge, low rest mass, low interaction chance. Interacts primarily via the weak interaction and gravity
+
+Electron Neutrino - 
+
+Antineutrinos - Equal value but opposite sign properties. One exists for each neutrino.
+
+
+
+Supernova Neutrinos: https://neutrinos.fnal.gov/sources/supernova-neutrinos/
+99% of a supernova's energy is dispersed as a busrt of neutrinos 
+	
+Scientists caught neutrinos from a supernova in a nearby galaxy, the Large Magellanic Cloud ?
+	How can they be sure?
