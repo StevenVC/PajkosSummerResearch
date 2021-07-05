@@ -1,0 +1,36 @@
+Coding Best Practices:
+•	Take a look at different python tricks and record 2 you'd like to use in the future
+		-Use oneline for loops
+		-Use multiple assignment
+
+Supernovae:
+•	Read up on the r process (the nuclear physics section and astrophysical sights)
+		-It is a set of nuclear reactions that are responsible for creating a large amount of heavy elements (heavier than iron)
+		-It is a series of rapid neutron captures by one or more heavy seed nuclei (typically iron?)
+			-Rapid in tht they occur before radioactive decay has yet to occur
+		-?This sequence can continue up to the limit of stability of the increasingly neutron-rich nuclei (the neutron drip line) to physically retain neutrons as governed by the short range nuclear force?
+		-Occurs in regions where there is a high density of free neutrons
+		-
+•	What is the r process?  Where does it take place?
+		-Nuclerar Physics 
+			-Can take place in low mass supernocae, Type 2 supernovae, and neutron star mergers
+		-Astrophysical 
+			-Most likely location core-collapse supernovae 
+			-Because of these spectroscopic features it has been argued that such nucleosynthesis in the Milky Way has been primarily ejecta from neutron-star mergers rather than from supernovae
+			-
+•	What is photodissociation?  beta minus decay?
+		-Photodissociation: The decomposition of compunds caused by photons/light
+		-Beta Minus Decay: A type of radioactive decay where a beta particle (electron or positron) are emitted from an atomic nucleus
+			-this causes the nuclide to change to a isobar 
+				-Either neutron to proton (release electron and antineutrino)
+				-Or proton to neutron (release of a positron with a neutrino)
+•	Record any unknown phrases in your astro dictionary
+
+Gravitational Waves:
+•	Read this webpage on detecting GWs & watch the video (be careful the audio is unusually loud)
+•	What is an interferometer?
+		-Its a device used to measure the interfecene patterns created by two or more light sources.
+		-These interference patterns can have incoded information about various phenomena such as gravitational waves
+•	If GWs pass through matter, why can we measure them?
+		-The pass through matter but they also coause space to stretch meaning this matter is stretching/contracting
+		-This allows us to measure them with setups like interferometers
