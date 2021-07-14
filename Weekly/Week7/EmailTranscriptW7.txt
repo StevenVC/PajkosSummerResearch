@@ -1,0 +1,16 @@
+Coding Activity:
+•	Verify, incorporate, and modify the attached code snippet into your existing workflow.  It gives examples of plotting GW strain in 3D using Eqns (2.9a-2.9b) from Oohara+ (1997)
+•	Download the 3D .dat file I send you (tbounce = 0 sec) and plot the GW strain vs time for 3 different viewing angles (theta, phi): (pi/2, 0), (0, 0), & (pi/4, pi/4)
+•	As a separate activity, plot a 3D sphere using the plot_surface functionality in python
+
+Reflection:
+•	We are roughly halfway through the summer.  In a research project it's important to keep working but also to maintain perspective.  Compile a list of the 3 most interesting things ...
+o	... you have learned about supernovae thus far
+o	... you have learned about GWs thus far
+o	... you have learned and used regarding software best practices
+
+Imagine you are asked, "why is your research project important?".  In your own words, answer assuming...
+	 ... a family member asks you
+	 ... one of your class mates in physics asks you
+	 ... Sean or I ask you
+Brainstorm different topics in astronomy you may have heard about or are interested in and would like to learn moving forward
