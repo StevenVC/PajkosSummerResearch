@@ -1,0 +1,33 @@
+-Reshape
+	-Follows the name, gives an existing array a new shape
+	-Allows for dimensional reduction of arrays
+	
+
+-allclose
+	-Checks if two arrays (elementwise) are approximatley equivalent according to a tollerance value
+	-Returns boolean values
+
+-where
+	-Returns the index position of elements in an array that satisfies specified conditions
+	-This function can also replace values of an array depending on how thet meet a condition
+
+-clip
+	-In essence this function changes the values of an array to stay within a specified range
+	-Can be used to modify an array and assign it to a new array
+
+-einsum
+	-Einstein summation convention
+	-Multipurpse function that can operate faster an more efficently than some other array functions
+	-Can replicate functions such as np.diag, np.transpose, matrix multiplication,
+		vector multiplication
+
+
+Kilonova:
+-Occurs in compact binary systems when two compact objects merge into eachother
+-Believed to emit short gamma-ray bursts and strong EM radiation due to the radioactive 
+	decay of heavy r-process nuclei during the merger event
+-The duration of the observed light curve can in part be attributed to the emission of
+	EM radiation (gamma-ray photon) during neutron capture. 
+-short gamma-ray bursts (?)
+
+Next Tuesday at 11:00 am
