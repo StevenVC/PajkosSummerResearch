@@ -7,6 +7,7 @@ Created on Thu Nov 25 12:33:13 2021
 
 import numpy as np
 import scipy as scp
+import matplotlib.colors as colors
 
 def cenDiff(x,y): #4th order central difference stencil method
     '''
@@ -34,7 +35,7 @@ def cenDiff(x,y): #4th order central difference stencil method
     
     return dydx #Return the dydx list
 
-def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=True):
+def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
     '''
     Get h+ in terms of arbitrary angle [M.A.P 4 June'19]
     If True, .dat files contain first time derivative of Q, else
@@ -55,7 +56,14 @@ def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=True):
         QddotXZ = cenDiff(t,Qxz)
         QddotYZ = cenDiff(t,Qyz)
         QddotZZ = cenDiff(t,Qzz)
-    
+    else:
+        QddotXX = Qxx
+        QddotYY = Qyy
+        QddotXY = Qxy
+        QddotXZ = Qxz
+        QddotYZ = Qyz
+        QddotZZ = Qzz
+        
     '''Check these constants'''  
     Gc4 = 6.67e-8/3e10/3e10/3e10/3e10 #Constant
     distance = 10e3 * 3.086e18 # [10 kpc]
@@ -70,14 +78,16 @@ def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=True):
     '''
     Why is this 1.0* and not 2.0*
     https://en.wikipedia.org/wiki/Quadrupole_formula
+    
+    It was 1.0* I changed it to 2.0* for the time being
     '''
-    h *= 1.0*Gc4/distance
+    h *= 2.0*Gc4/distance
     
     h = np.reshape(h,(np.shape(QddotYZ)[0],np.shape(theta[0])[0],np.shape(theta[0])[0]))
     
     return(h)
 
-def crossGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,CenDiff=True):
+def crossGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,CenDiff=False):
     '''
     Get hx in terms of arbitrary angle [M.A.P 4 June'19]
     If True, .dat files contain first time derivative of Q, else
@@ -118,7 +128,7 @@ def crossGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,CenDiff=True):
     h = np.reshape(h,(np.shape(QddotYZ)[0],np.shape(theta[0])[0],np.shape(theta[0])[0]))
     return(h)
 
-def normDiffGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=True):
+def normDiffGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
     '''
     theta: theta information
     phi: phi angle information
@@ -128,21 +138,6 @@ def normDiffGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=True):
     
     return h (gravitational wave information)
     '''
-    # if (CenDiff == True):
-    #     QddotXX = cenDiff(t,Qxx)
-    #     QddotYY = cenDiff(t,Qyy)
-    #     QddotXY = cenDiff(t,Qxy)
-    #     QddotXZ = cenDiff(t,Qxz)
-    #     QddotYZ = cenDiff(t,Qyz)
-    #     QddotZZ = cenDiff(t,Qzz)
-    # else:
-    #     QddotXX = Qxx
-    #     QddotYY = Qyy
-    #     QddotXY = Qxy
-    #     QddotXZ = Qxz
-    #     QddotYZ = Qyz
-    #     QddotZZ = Qzz
-    
     hPlusData = plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=CenDiff)
     hCrossData = crossGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,CenDiff=CenDiff)
     
@@ -197,3 +192,18 @@ def noNan(dataArray, conVal = 0):
     dataArray[np.isnan(dataArray)] = 0
     
     return(dataArray)
+
+def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+    '''
+    https://stackoverflow.com/questions/18926031/how-to-extract-a-subset-of-a-colormap-as-a-new-colormap-in-matplotlib
+    
+    Generate a new colormap that matches the colormap for the full data for a subset of data
+    
+    cmap: full colormap
+    minval: minimum value of the new colormap
+    maxval: maximum value of the new colormap
+    '''
+    new_cmap = colors.LinearSegmentedColormap.from_list(
+        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+        cmap(np.linspace(minval, maxval, n)))
+    return new_cmap
