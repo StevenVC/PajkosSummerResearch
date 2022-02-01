@@ -48,6 +48,8 @@ def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
     cenDiff: True (take centered difference), False (don't take centered difference)
     
     return h (gravitational wave information)
+    
+    Ken-ichi. Oohara, Takashi. Nakamura, Masaru. Shibata, Chapter 3. A Way to 3D Numerical Relativity, Progress of Theoretical Physics Supplement, Volume 128, March 1997, Pages 183–249, https://doi.org/10.1143/PTPS.128.183
     '''
     if (CenDiff == True): #If CenDiff == True Qddot arrays have yet to be differentiated
         QddotXX = cenDiff(t,Qxx)
@@ -68,9 +70,16 @@ def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
     Gc4 = 6.67e-8/3e10/3e10/3e10/3e10 #Constant
     distance = 10e3 * 3.086e18 # [10 kpc]
     
+#     h = np.outer(QddotXX, np.cos(theta)*np.cos(theta)*np.cos(phi)*np.cos(phi)-np.sin(phi)*np.sin(phi)) + \
+#         np.outer(QddotYY, np.cos(theta)*np.cos(theta)*np.sin(phi)*np.sin(phi)-np.cos(phi)*np.cos(phi)) - \
+#         np.outer(QddotXY, np.sin(2*phi)*np.sin(theta)*np.sin(theta)) + \
+#         np.outer(QddotZZ, np.sin(theta)*np.sin(theta)) - \
+#         np.outer(QddotXZ, np.sin(2*theta)*np.cos(phi)) - \
+#         np.outer(QddotYZ, np.sin(2*theta)*np.sin(phi))
+    
     h = np.outer(QddotXX, np.cos(theta)*np.cos(theta)*np.cos(phi)*np.cos(phi)-np.sin(phi)*np.sin(phi)) + \
-        np.outer(QddotYY, np.cos(theta)*np.cos(theta)*np.sin(phi)*np.sin(phi)-np.cos(phi)*np.cos(phi)) - \
-        np.outer(QddotXY, np.sin(2*phi)*np.sin(theta)*np.sin(theta)) + \
+        np.outer(QddotYY, np.cos(theta)*np.cos(theta)*np.sin(phi)*np.sin(phi)-np.cos(phi)*np.cos(phi)) + \
+        np.outer(QddotXY, np.sin(2*phi)*np.cos(theta)*np.cos(theta)+np.sin(2*phi)) + \
         np.outer(QddotZZ, np.sin(theta)*np.sin(theta)) - \
         np.outer(QddotXZ, np.sin(2*theta)*np.cos(phi)) - \
         np.outer(QddotYZ, np.sin(2*theta)*np.sin(phi))
@@ -78,10 +87,8 @@ def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
     '''
     Why is this 1.0* and not 2.0*
     https://en.wikipedia.org/wiki/Quadrupole_formula
-    
-    It was 1.0* I changed it to 2.0* for the time being
     '''
-    h *= 2.0*Gc4/distance
+    h *= 1*Gc4/distance
     
     h = np.reshape(h,(np.shape(QddotYZ)[0],np.shape(theta[0])[0],np.shape(theta[0])[0]))
     
@@ -100,6 +107,8 @@ def crossGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,CenDiff=False):
     cenDiff: True (take centered difference), False (don't take centered difference)
     
     return h (gravitational wave information)
+    
+    Ken-ichi. Oohara, Takashi. Nakamura, Masaru. Shibata, Chapter 3. A Way to 3D Numerical Relativity, Progress of Theoretical Physics Supplement, Volume 128, March 1997, Pages 183–249, https://doi.org/10.1143/PTPS.128.183
     '''
    
     if (CenDiff == True):
@@ -123,7 +132,11 @@ def crossGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,CenDiff=False):
         np.outer(QddotXZ,np.sin(theta)*np.sin(phi)) - \
         np.outer(QddotYZ,np.sin(theta)*np.cos(phi))
     
-    h *= 2.0*Gc4/distance
+    '''
+    Why is this 1.0* and not 2.0*
+    https://en.wikipedia.org/wiki/Quadrupole_formula
+    '''
+    h *= 1*Gc4/distance
     
     h = np.reshape(h,(np.shape(QddotYZ)[0],np.shape(theta[0])[0],np.shape(theta[0])[0]))
     return(h)
@@ -163,7 +176,7 @@ def loadDatQ(path, fName, columns):
 
 def interpAngles(angle, time, lenVector):
     '''
-    Interpolate Angles for frequency sampeling
+    Interpolate Angles for frequency sampling
     Angle: Array of angles
     Time: Array containing data time
     lenVector: Frequency range
@@ -192,6 +205,36 @@ def noNan(dataArray, conVal = 0):
     dataArray[np.isnan(dataArray)] = 0
     
     return(dataArray)
+
+def genSpectOutputs(N, timeData, angle1 = 0, angle2 = 0):
+    '''
+    Generate spectrogram information for the dipole direction of GW
+    
+    N: Frequency range uppler limit ??
+    timeData: original time data [s]
+    Angle1: Direction data
+    Angle2: Direction data (optional)
+    
+    return (f1, t1, Sxx1, t2, f2, Sxx2)
+    '''
+    TimeArray = linspace(timeData[0], timeData[-1], int(N)) #Generate an evenly spaced array of times of length N
+    freqSample = N/(TimeArray[-1]) #Generate frequency sampling value
+    
+    f1, t1, Sxx1 = 0, 0, 0
+    if np.sum(angle1) != 0:
+        angle1 = noNan(angle1) #Convert any nan values in the array angle1 to 0
+
+        angle1Spec = interpAngles(angle1, timeData, N) #Time dependent angles information (interpolated)
+        f1, t1, Sxx1 = signal.spectrogram(angle1Spec, freqSample) #Generate Spectrogram info
+
+    f2, t2, Sxx2 = 0, 0, 0
+    if np.sum(angle2) != 0:
+        angle2 = noNan(angle2) #Convert any nan values in the array angle2 to 0
+        
+        angle2Spec = interpAngles(angle2, timeData, N) #Time dependent angles information (interpolated)
+        f2, t2, Sxx2 = signal.spectrogram(angle2Spec, freqSample) #Generate Spectrogram info
+    
+    return([f1, t1, Sxx1, f2, t2, Sxx2])
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     '''
