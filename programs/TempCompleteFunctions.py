@@ -159,7 +159,7 @@ def normDiffGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
 
     return(hNormDiff)
 
-def strain3dSurfMaxValue(dataObj, polarization, angles = [0,np.pi,0,2*np.pi]):
+def strain3dSurfMaxValue(dataObj, polarization, angles = [0,np.pi/2,0,2*np.pi]):
         '''
         Get the x,y,z values of strain ploted onto a 3d sphere ??
         
@@ -264,9 +264,9 @@ def genSpectOutputs(N, timeData, angle1 = 0, angle2 = 0):
     return (f1, t1, Sxx1, t2, f2, Sxx2)
     '''
     #Probably a better whay to accomplish the following 2 lines
-    timeArray = linspace(timeData[0], timeData[-1], int(N)) #Generate an evenly spaced array of times of length N
+    timeArray = np.linspace(timeData[0], timeData[-1], int(N)) #Generate an evenly spaced array of times of length N
     freqSample = N/(timeArray[-1]) #Generate frequency sampling value
-    
+
     f1, t1, Sxx1 = 0, 0, 0
     if np.sum(angle1) != 0:
         angle1 = noNan(angle1) #Convert any nan values in the array angle1 to 0
@@ -283,21 +283,16 @@ def genSpectOutputs(N, timeData, angle1 = 0, angle2 = 0):
     
     return([f1, t1, Sxx1, f2, t2, Sxx2])
 
-def maxStrainDipoleDirection(dataObj iterStep = 10, polarization = 0, numVerts = 50j, norm = False):
+def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/2,0,2*np.pi], norm = False):
     '''
     
     '''
     iterStart = 0 #Iteration start
     iterEnd = len(dataObj.rawTime) #Iteration end
-    iterStep = iterStep #Iteration step
-    nVerts = numVerts #n^(1/2) verts in spherical space
 
-    iterRange = np.arange(iterStart,iterEnd,iterStep) #Create iter array
+    iterRange = np.arange(iterStart,iterEnd,dataObj.timeStep) #Create iter array
     
-    sV_X, sV_Y, sV_Z, sV_R = strain3DSurfMaxValue(dataObj, iterRange, iterStep, nVerts, polarization = polarization) #sV_# -> strain value array (X,Y,Z,R)
-
-    print('IterRangeMV shape:')
-    print(iterRangeMV.shape)
+    sV_X, sV_Y, sV_Z, sV_R = strain3dSurfMaxValue(dataObj, polarization = polarization, angles = angles) #sV_# -> strain value array (X,Y,Z,R)
     
     sV_R_Pos = np.array([]) #Initialize empty array
 
