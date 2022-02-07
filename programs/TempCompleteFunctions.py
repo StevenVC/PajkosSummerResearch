@@ -7,6 +7,7 @@ Created on Thu Nov 25 12:33:13 2021
 
 import numpy as np
 import scipy as scp
+from scipy import signal
 import matplotlib.colors as colors
 
 def cenDiff(x,y): #4th order central difference stencil method
@@ -158,6 +159,50 @@ def normDiffGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
 
     return(hNormDiff)
 
+def strain3dSurfMaxValue(dataObj, polarization, angles = [0,np.pi,0,2*np.pi]):
+        '''
+        Get the x,y,z values of strain ploted onto a 3d sphere ??
+        
+        dataObj: the object containing the data being acted upon
+        polarization: setting for which polarization to use, (0 = cross, 1 = plus, 2 = norm diff)
+        angles: angles to use in h calculations ([theta_0,theta,phi_0,phi] Domain: Theta:[0,pi] Phi:[0,2pi])
+        '''
+        #theta - altitudinal angle [radians]
+        #phi   - azimuthal angle  [radians]
+        thetaPhi = np.mgrid[angles[0]:angles[1]:dataObj.nVerts, angles[2]:angles[3]:dataObj.nVerts] #Define angles to use when calculating h
+        
+        analysisTime = dataObj.rawTime[dataObj.timeSample]
+        
+        QddotXX = cenDiff(analysisTime,dataObj.rawData[0][dataObj.timeSample])
+        QddotYY = cenDiff(analysisTime,dataObj.rawData[1][dataObj.timeSample])
+        QddotXY = cenDiff(analysisTime,dataObj.rawData[2][dataObj.timeSample])
+        QddotXZ = cenDiff(analysisTime,dataObj.rawData[3][dataObj.timeSample])
+        QddotYZ = cenDiff(analysisTime,dataObj.rawData[4][dataObj.timeSample])
+        QddotZZ = cenDiff(analysisTime,dataObj.rawData[5][dataObj.timeSample])
+        
+        if polarization == 0: 
+            hVals = crossGeneral(thetaPhi[0],thetaPhi[1],analysisTime,QddotXX,QddotYY,QddotXY,QddotXZ,QddotYZ,CenDiff=False)
+
+        elif polarization == 1:
+            hVals = plusGeneral(thetaPhi[0],thetaPhi[1],analysisTime,QddotXX,QddotYY,QddotXY,QddotXZ,QddotYZ,QddotZZ,CenDiff=False)
+
+        elif polarization == 2:
+            hVals = normDiffGeneral(thetaPhi[0],thetaPhi[1],analysisTime,QddotXX,QddotYY,QddotXY,QddotXZ,QddotYZ,QddotZZ,CenDiff=False)
+
+        else:
+            print('Correct the value given for polarization (0 = cross, 1 = plus, 2 = norm diff)!!')
+            return()
+        
+        '''
+        thetaPhi[0] -> theta
+        thetaPhi[1] -> phi
+        '''
+        xSph = hVals * np.sin(thetaPhi[0]) * np.cos(thetaPhi[1])
+        ySph = hVals * np.sin(thetaPhi[0]) * np.sin(thetaPhi[1])
+        zSph = hVals * np.cos(thetaPhi[0])
+
+        return(xSph,ySph,zSph,hVals)
+
 def loadDatQ(path, fName, columns):
     '''
     path: file path to data files, not including file name 
@@ -194,10 +239,11 @@ def interpAngles(angle, time, lenVector):
 def noNan(dataArray, conVal = 0):
     '''
     Convert any nan values in an array to 0
+    
     dataArray: array to check through
     conVal: value to convert nan values too
     
-    return array with nan elements replaced with 0
+    return array with nan elements replaced with 0 (by default)
     '''
     if np.sum(dataArray)==0:
         return(dataArray)
@@ -217,8 +263,9 @@ def genSpectOutputs(N, timeData, angle1 = 0, angle2 = 0):
     
     return (f1, t1, Sxx1, t2, f2, Sxx2)
     '''
-    TimeArray = linspace(timeData[0], timeData[-1], int(N)) #Generate an evenly spaced array of times of length N
-    freqSample = N/(TimeArray[-1]) #Generate frequency sampling value
+    #Probably a better whay to accomplish the following 2 lines
+    timeArray = linspace(timeData[0], timeData[-1], int(N)) #Generate an evenly spaced array of times of length N
+    freqSample = N/(timeArray[-1]) #Generate frequency sampling value
     
     f1, t1, Sxx1 = 0, 0, 0
     if np.sum(angle1) != 0:
@@ -235,6 +282,49 @@ def genSpectOutputs(N, timeData, angle1 = 0, angle2 = 0):
         f2, t2, Sxx2 = signal.spectrogram(angle2Spec, freqSample) #Generate Spectrogram info
     
     return([f1, t1, Sxx1, f2, t2, Sxx2])
+
+def maxStrainDipoleDirection(dataObj iterStep = 10, polarization = 0, numVerts = 50j, norm = False):
+    '''
+    
+    '''
+    iterStart = 0 #Iteration start
+    iterEnd = len(dataObj.rawTime) #Iteration end
+    iterStep = iterStep #Iteration step
+    nVerts = numVerts #n^(1/2) verts in spherical space
+
+    iterRange = np.arange(iterStart,iterEnd,iterStep) #Create iter array
+    
+    sV_X, sV_Y, sV_Z, sV_R = strain3DSurfMaxValue(dataObj, iterRange, iterStep, nVerts, polarization = polarization) #sV_# -> strain value array (X,Y,Z,R)
+
+    print('IterRangeMV shape:')
+    print(iterRangeMV.shape)
+    
+    sV_R_Pos = np.array([]) #Initialize empty array
+
+    sV_X_Flat = sV_X.reshape((len(sV_X),len(sV_X[0])**2)) #Flatten cord array to 2d array 
+    sV_Y_Flat = sV_Y.reshape((len(sV_Y),len(sV_Y[0])**2)) #Flatten cord array to 2d array 
+    sV_Z_Flat = sV_Z.reshape((len(sV_Z),len(sV_Z[0])**2)) #Flatten cord array to 2d array 
+    sV_R_Flat = sV_R.reshape((len(sV_R),len(sV_R[0])**2)) #Flatten radius array to 2d array 
+
+    sV_R_Pos = np.argmax(sV_R_Flat,axis=1) #Get max R value at each time
+
+    sV_X_MV = np.take_along_axis(sV_X_Flat, np.expand_dims(sV_R_Pos, axis=1),axis=1) #Get values associated with max R values at each time
+    sV_Y_MV = np.take_along_axis(sV_Y_Flat, np.expand_dims(sV_R_Pos, axis=1),axis=1) #Get values associated with max R values at each time
+    sV_Z_MV = np.take_along_axis(sV_Z_Flat, np.expand_dims(sV_R_Pos, axis=1),axis=1) #Get values associated with max R values at each time
+
+#     sV_XYZ_MV = hstack((sV_X_MV,sV_Y_MV,sV_Z_MV)) #Stack cord arrays 
+    
+    if norm == True: 
+        rPos = (sV_X_MV**2 + sV_Y_MV**2 + sV_Z_MV**2)**(1/2) #Get length of r
+        
+        sV_X_MV = sV_X_MV/rPos #Normalize x data
+        sV_Y_MV = sV_Y_MV/rPos #Normalize y data
+        sV_Z_MV = sV_Z_MV/rPos #Normalize z data
+
+    theta = np.arccos(sV_Z_MV/(np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)+(sV_Z_MV**2))))
+    phi = np.arctan(sV_Y_MV/sV_X_MV)
+    
+    return(theta, phi, dataObj.rawTime[iterRange])
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     '''
