@@ -85,10 +85,6 @@ def plusGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,Qzz,CenDiff=False):
         np.outer(QddotXZ, np.sin(2*theta)*np.cos(phi)) - \
         np.outer(QddotYZ, np.sin(2*theta)*np.sin(phi))
     
-    '''
-    Why is this 1.0* and not 2.0*
-    https://en.wikipedia.org/wiki/Quadrupole_formula
-    '''
     h *= 1*Gc4/distance
     
     h = np.reshape(h,(np.shape(QddotYZ)[0],np.shape(theta[0])[0],np.shape(theta[0])[0]))
@@ -132,11 +128,7 @@ def crossGeneral(theta,phi,t,Qxx,Qyy,Qxy,Qxz,Qyz,CenDiff=False):
         np.outer(QddotXY,np.cos(theta)*np.cos(2*phi)) + \
         np.outer(QddotXZ,np.sin(theta)*np.sin(phi)) - \
         np.outer(QddotYZ,np.sin(theta)*np.cos(phi))
-    
-    '''
-    Why is this 1.0* and not 2.0*
-    https://en.wikipedia.org/wiki/Quadrupole_formula
-    '''
+
     h *= 1*Gc4/distance
     
     h = np.reshape(h,(np.shape(QddotYZ)[0],np.shape(theta[0])[0],np.shape(theta[0])[0]))
@@ -316,8 +308,15 @@ def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/
         sV_Y_MV = sV_Y_MV/rPos #Normalize y data
         sV_Z_MV = sV_Z_MV/rPos #Normalize z data
 
+        
+#     print('Sum y max values summed', np.sum(sV_Y_MV))
+#     print('Sum x max values summed', np.sum(sV_X_MV))
+#     print('Sum of y/x', np.sum(sV_Y_MV/sV_X_MV))
+    
     theta = np.arccos(sV_Z_MV/(np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)+(sV_Z_MV**2))))
     phi = np.arctan(sV_Y_MV/sV_X_MV)
+    
+    #Find different trig function to calculate phi above
     
     return(theta, phi, dataObj.rawTime[iterRange])
 
