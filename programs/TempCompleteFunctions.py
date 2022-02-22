@@ -10,6 +10,8 @@ import scipy as scp
 from scipy import signal
 import matplotlib.colors as colors
 
+import mpmath as mpm #Testing
+
 def cenDiff(x,y): #4th order central difference stencil method
     '''
     x: first set of data
@@ -278,6 +280,8 @@ def genSpectOutputs(N, timeData, angle1 = 0, angle2 = 0):
 def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/2,0,2*np.pi], norm = False):
     '''
     
+    theta - altitudinal angle [radians]
+    phi   - azimuthal angle  [radians]
     '''
     iterStart = 0 #Iteration start
     iterEnd = len(dataObj.rawTime) #Iteration end
@@ -316,7 +320,16 @@ def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/
     
     theta = np.arccos(sV_Z_MV/(np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)+(sV_Z_MV**2))))
     phi = np.arctan(sV_Y_MV/sV_X_MV)
-#     phi = np.arccos(sV_X_MV/sV_R_Pos)
+#     phi = np.arccos(sV_X_MV/np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)))
+
+#     sV_X_MV_CSC = []
+
+#     for i in sV_X_MV:
+#         sV_X_MV_CSC.append(float(mpm.csc(i)))
+
+#     sV_X_MV_CSC = np.array(storageX)
+
+#     phi = np.cos(sV_Y_MV)*sV_X_MV_CSC
     
     #Find different trig function to calculate phi above
     
