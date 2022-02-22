@@ -309,12 +309,14 @@ def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/
         sV_Z_MV = sV_Z_MV/rPos #Normalize z data
 
         
-#     print('Sum y max values summed', np.sum(sV_Y_MV))
-#     print('Sum x max values summed', np.sum(sV_X_MV))
+#     print('Sum y max values', np.sum(sV_Y_MV))
+#     print('Sum x max values', np.sum(sV_X_MV))
 #     print('Sum of y/x', np.sum(sV_Y_MV/sV_X_MV))
+#     print('Sum of r', np.sum(rPos))
     
     theta = np.arccos(sV_Z_MV/(np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)+(sV_Z_MV**2))))
     phi = np.arctan(sV_Y_MV/sV_X_MV)
+#     phi = np.arccos(sV_X_MV/sV_R_Pos)
     
     #Find different trig function to calculate phi above
     
