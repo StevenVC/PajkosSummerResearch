@@ -319,19 +319,8 @@ def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/
 #     print('Sum of r', np.sum(rPos))
     
     theta = np.arccos(sV_Z_MV/(np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)+(sV_Z_MV**2))))
-    phi = np.arctan(sV_Y_MV/sV_X_MV)
-#     phi = np.arccos(sV_X_MV/np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)))
-
-#     sV_X_MV_CSC = []
-
-#     for i in sV_X_MV:
-#         sV_X_MV_CSC.append(float(mpm.csc(i)))
-
-#     sV_X_MV_CSC = np.array(storageX)
-
-#     phi = np.cos(sV_Y_MV)*sV_X_MV_CSC
-    
-    #Find different trig function to calculate phi above
+#     phi = np.arctan(sV_Y_MV/sV_X_MV)
+    phi = np.arctan2(sV_Y_MV,sV_X_MV)
     
     return(theta, phi, dataObj.rawTime[iterRange])
 
