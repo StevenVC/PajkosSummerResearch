@@ -12,6 +12,59 @@ import matplotlib.colors as colors
 
 import mpmath as mpm #Testing
 
+def normalizeVector(vectorArray):
+    '''
+    Calculate the normalized vectors of R3 vectors in an array of n vectors
+    
+    vectorArray: array of row vectors
+    '''
+    
+    if vectorArray.shape[0] == (3,): #Check if the passed in array is a single vector
+        r = np.sqrt(np.sum(vectorArray[:]**2)) #Vector lengths
+        return(vectorArray/np.transpose([r])) #Return the array of normalized vectors
+            
+    r = np.sqrt(np.sum(vectorArray[:]**2,axis=1)) #Vector lengths
+    return(vectorArray/np.transpose([r])) #Return the array of normalized vectors
+
+def genNormalizedRotationVectorSep(xPoints, yPoints, zPoints, norm):
+    '''
+    Calculate and generate the rotation vectors between each adjacent vector in an array of n vectors
+    
+    xPoints: array of points that define x coordinates and combine to form an array of row vectors
+    yPoints: array of points that define y coordinates and combine to form an array of row vectors
+    zPoints: array of points that define z coordinates and combine to form an array of row vectors
+    
+    return: x,y,z points as seperate arrays
+    '''
+    
+    vectorArray = np.array([xPoints,yPoints,zPoints]).transpose() #Combine the x,y,z points into a single array to simplify math
+    
+    for i in range(len(vectorArray)-1):
+        if i == 0: #Create the rotation axis array with the first element only
+            rotAxisArray = np.cross(vectorArray[i],vectorArray[i+1])
+            
+        else: #Create the remaining elements of the rotation axis array
+            rotAxisArray = np.vstack((rotAxisArray,np.cross(vectorArray[i],vectorArray[i+1])))
+
+            
+    theta = np.arccos(sV_Z_MV/(np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)+(sV_Z_MV**2))))
+    phi = np.arctan2(sV_Y_MV,sV_X_MV)
+    
+    if norm == True:
+        normalizedRotAxisVectors = normalizeVector(rotAxisArray)
+        
+        xPoints = normalizedRotAxisVectors[:,0]
+        yPoints = normalizedRotAxisVectors[:,1]
+        zPoints = normalizedRotAxisVectors[:,2]
+        
+        return(xPoints,yPoints,zPoints)
+    else:
+        xPoints = rotAxisArray[:,0]
+        yPoints = rotAxisArray[:,1]
+        zPoints = rotAxisArray[:,2]
+        
+        return(xPoints,yPoints,zPoints)
+
 def cenDiff(x,y): #4th order central difference stencil method
     '''
     x: first set of data
