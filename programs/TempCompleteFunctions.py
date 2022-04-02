@@ -330,8 +330,10 @@ def genSpectOutputs(N, timeData, angle1 = 0, angle2 = 0):
     
     return([f1, t1, Sxx1, f2, t2, Sxx2])
 
-def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/2,0,2*np.pi], norm = False):
+def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/2,0,2*np.pi], norm = False, returnCart = False):
     '''
+    
+    returnCart: if true, returns cartesian coordinates as well as angular data. Default False
     
     theta - altitudinal angle [radians]
     phi   - azimuthal angle  [radians]
@@ -372,10 +374,15 @@ def maxStrainDipoleDirection(dataObj, polarization = 0, angles = [np.pi/2,np.pi/
 #     print('Sum of r', np.sum(rPos))
     
     theta = np.arccos(sV_Z_MV/(np.sqrt((sV_X_MV**2)+(sV_Y_MV**2)+(sV_Z_MV**2))))
-#     phi = np.arctan(sV_Y_MV/sV_X_MV)
     phi = np.arctan2(sV_Y_MV,sV_X_MV)
     
-    return(theta, phi, dataObj.rawTime[iterRange])
+    if returnCart == True: # Check if returnCart is True, if so return cartesian coordinates as well as angular data
+        return(theta, phi, sV_X_MV, sV_Y_MV, sV_Z_MV, dataObj.rawTime[iterRange])
+    elif returnCart == False:
+        return(theta, phi, dataObj.rawTime[iterRange])
+    else:
+        print("ERROR: Invalid input for returnCart:")
+        return
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     '''
@@ -391,3 +398,33 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
+
+def normalizeVector(vectorArray):
+    '''Calculate the normalized vectors of R3 vectors in an array of n vectors'''
+    
+    if vectorArray.shape[0] == (3,): #Check if the passed in array is a single vector
+        r = np.sqrt(np.sum(vectorArray[:]**2)) #Vector lengths
+        return(vectorArray/np.transpose([r])) #Return the array of normalized vectors
+            
+    r = np.sqrt(np.sum(vectorArray[:]**2,axis=1)) #Vector lengths
+    return(vectorArray/np.transpose([r])) #Return the array of normalized vectors
+
+def genNormalizedRotationVectorSep(xPoints, yPoints, zPoints):
+    '''
+    Calculate and generate the rotation vectors between each adjacent vector in an array of n vectors
+    
+    xPoints: array of points that define x coordinates and combine to form an array of row vectors
+    yPoints: array of points that define y coordinates and combine to form an array of row vectors
+    zPoints: array of points that define z coordinates and combine to form an array of row vectors
+    '''
+    
+    vectorArray = np.array([xPoints,yPoints,zPoints]).transpose() #Combine the x,y,z points into a single array to simplify math
+    
+    for i in range(len(vectorArray)-1):
+        if i == 0: #Create the rotation axis array with the first element only
+            rotAxisArray = np.cross(vectorArray[i],vectorArray[i+1])
+            
+        else: #Create the remaining elements of the rotation axis array
+            rotAxisArray = np.vstack((rotAxisArray,np.cross(vectorArray[i],vectorArray[i+1])))
+
+    return(normalizeVector(rotAxisArray))
